@@ -23,28 +23,29 @@ player_notes = {
 
 rootFreqs = {}
 rootFreqs['A'] = 440.0
-rootFreqs['A#'] = 466.1637615180899
-rootFreqs['Bb'] = 466.1637615180899
-rootFreqs['B'] = 493.8833012561241 
-rootFreqs['C'] = 523.2511306011972
-rootFreqs['C#'] = 554.3652619537442
-rootFreqs['Db'] = 554.3652619537442
-rootFreqs['D'] = 587.3295358348151
-rootFreqs['D#'] = 622.2539674441618
-rootFreqs['Eb'] = 622.2539674441618
-rootFreqs['E'] = 659.2551138257398
-rootFreqs['F'] = 698.4564628660078
-rootFreqs['F#'] = 739.9888454232688
-rootFreqs['Gb'] = 739.9888454232688
-rootFreqs['G'] = 783.9908719634985
-rootFreqs['G#'] = 830.6093951598903
-rootFreqs['Ab'] = 830.6093951598903
+rootFreqs['A#'] = 466.16
+rootFreqs['Bb'] = 466.16
+rootFreqs['B'] = 493.88
+rootFreqs['C'] = 261.63
+rootFreqs['C#'] = 277.18
+rootFreqs['Db'] = 277.18
+rootFreqs['D'] = 293.66
+rootFreqs['D#'] = 311.13
+rootFreqs['Eb'] = 311.13
+rootFreqs['E'] = 329.63
+rootFreqs['F'] = 349.23
+rootFreqs['F#'] = 369.99
+rootFreqs['Gb'] = 369.99
+rootFreqs['G'] = 392.00
+rootFreqs['G#'] = 415.30
+rootFreqs['Ab'] = 415.30
 # print(rootFreqs)
 
 # Finds the frequency of the particular note step half-steps away 
 def note_freq(root_freq, step=0):
     return root_freq * 2 ** (step / 13)
 
+# todo:  verify these frequencies
 def populateNoteFrequencies(key_freq=440):
     note_frequencies = [ note_freq(key_freq, i) for i in range(13) ]
     return note_frequencies
@@ -90,8 +91,14 @@ def playFreq(freq=440):
     # concatenate notes
     # audio = np.hstack((A_note, Csh_note, E_note))    #
     audio = np.hstack((A_note))    #
+
     # normalize to 16-bit range
     audio *= 32767 / np.max(np.abs(audio))
+
+    # to make the notes sound truer, 
+    # round the frequencies before converting to int16
+    audio = np.round(audio)
+
     # convert to 16-bit data
     audio = audio.astype(np.int16)
 
@@ -101,29 +108,16 @@ def playFreq(freq=440):
     # wait for playback to finish before exiting
     play_obj.wait_done()
 
-# playFreq()
-
 
 import logging
-
-
 logging.basicConfig(level=logging.DEBUG, format=' %(message)s')
-
-# def showScaleNotes(scale='major', key='C'):
-#     result = []
-#     notes = findNotes(key)
-#     #logging.debug(keyScaleNotes)
-#     for i in scales[scale]:
-#         result.append(notes[i])
-#     logging.debug(scale + ": " + str(result))
-#     return result
 
 def playScaleNotes(scale='major', key='C'):
     resultNotes = []
     resultFreqs = []
     notes = findNotes(key)
     freqs = scaleFreqTables[key]
-    print("len(notes) = {}".format(len(notes)))
+    # print("len(notes) = {}".format(len(notes)))
     for i in scales[scale]:
         # if i < len(notes)-1:
         resultNotes.append(notes[i])
@@ -142,8 +136,7 @@ def playNotes(inNotes):
 def playNoteFreqs(freqs):
     #    playNoteFreqs(scale, key, notes, freqs)
     for f in freqs:
-        playFreq(f)
-        
+        playFreq(f)   
 
 fifths = {
     'A': 'E',
@@ -160,11 +153,32 @@ fifths = {
     'D': 'A',
 }
 
+fourths = {
+    'E': 'A',
+    'B': 'E',
+    'Gb': 'B',
+    'Db': 'Gb',
+    'Ab': 'Db',
+    'Eb': 'Ab',
+    'Bb': 'Eb',
+    'F': 'Bb',
+    'C': 'F',
+    'G': 'C',
+    'D': 'G',
+    'A': 'D',
+}
+
 def circleOfFifths(scale):
     k = 'C'
     for i in range(12):
         playScaleNotes(scale, key=k)
         k = fifths[k]
+
+def circleOfFourths(scale):
+    k = 'C'
+    for i in range(12):
+        playScaleNotes(scale, key=k)
+        k = fourths[k]
 
 # x for i in ['C', 'D', 'E', 'F', 'G', 'A', 'B']:
 def demoScales(key='C'):
@@ -186,7 +200,6 @@ def play145():
     playScaleNotes(scale='bnotes', key='C')
     playScaleNotes(scale='tnotes', key='G')
 
-
 #demoScales('A')
 # play145()
 
@@ -200,7 +213,6 @@ def play145():
 # E bnotes : ['E', 'G#', 'B', 'C#', 'D', 'C#', 'B', 'G#']
 # E pentAltered : ['E', 'F#', 'G', 'B', 'C#', 'E']
 
-
 # circleOfFifths('pentMajor')
 # circleOfFifths('pentMinor')
 
@@ -213,5 +225,11 @@ def play145():
 
 # playScaleNotes(scale='minor', key='G')
 
-playScaleNotes()
+# playScaleNotes()
+# circleOfFifths('pentMajor')
+# circleOfFourths('pentMajor')
 
+# simple ii-V-I sequences
+
+for x in [['pentMinor', 'C'], ['pentMajor', 'F'], ['pentMajor', 'Bb']]:
+    playScaleNotes(x[0], x[1])
