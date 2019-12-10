@@ -1,4 +1,4 @@
-# py_simplemusic
+# py_musictheory
 
 # Based on scaletheorymapper
 
