@@ -11,5 +11,3 @@ Backlog shortlist:
 - chord sequence player (1, 4, 5, etc.)
 - chord sequence scripting language and UI
 - input/output (load chord sequences, output mapped scales, chords, substitutions
-
-0310 - playing with workflows
