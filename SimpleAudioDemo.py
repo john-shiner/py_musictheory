@@ -79,7 +79,8 @@ def playFreq(freq=440):
     # get timesteps for each sample, T is note duration in seconds
     sample_rate = 44100
     T = 0.25
-    t = np.linspace(0, T, T * sample_rate, False)
+
+    t = np.linspace(0, T, int(T * sample_rate), False)
 
     # # generate sine wave notes
     # A_note = np.sin(A_freq * t * 2 * np.pi)
@@ -198,7 +199,8 @@ def play145():
     playScaleNotes(scale='bnotes', key='G')
     playScaleNotes(scale='bnotes', key='F')
     playScaleNotes(scale='bnotes', key='C')
-    playScaleNotes(scale='tnotes', key='G')
+    # playScaleNotes(scale='tnotes', key='G')
+    # playScaleNotes(scale='bnotes', key='G')
 
 #demoScales('A')
 # play145()
@@ -231,5 +233,10 @@ def play145():
 
 # simple ii-V-I sequences
 
-for x in [['pentMinor', 'C'], ['pentMajor', 'F'], ['pentMajor', 'Bb']]:
-    playScaleNotes(x[0], x[1])
+# for x in [['pentMinor', 'C'], ['pentMajor', 'F'], ['pentMajor', 'Bb']]:
+#     playScaleNotes(x[0], x[1])
+
+# play145()
+
+demoScales()
+
